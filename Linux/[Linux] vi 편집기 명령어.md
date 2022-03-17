@@ -22,7 +22,7 @@
 
 <br/>
 
-![vi편집기_명령어_그림](./linux_photo_file/linux 명령어.png)
+![linux 명령어](linux_photo_file/linux 명령어.png)
 
 <br/>
 
