@@ -148,10 +148,77 @@ docker rm wefish01
 docker pull whybein/wefish:0.1
 ```
 
- <br/>
+ 
+
+
+
+## 11. Volume
+
+파일들을 컨테이너로 복사하지않고 참조하도록 설정하는것
+docker는 기본적으로 컨테이너를 삭제하면 데이터가 삭제되므로 데이터를 보존하고 싶을 때 혹은 여러 컨테이너간에 데이터를 공유해서 사용하고 싶을때 적용하면됨
+Volume을 사용하는 방식은 두가지가 있음 ( 알고보니 Volume이 두가지방식은 아님 )
+
+### 11.1 Volume방식
+
+호스트의 특정 공간에 공유할 폴더를 생성하는 방식임
+
+#### 11.1.1 Volume생성
+
+```
+docker volume create <volume-name>`
+`docker volume create db-redis
+```
+
+#### 11.1.2 Volume조회
+
+```
+docker volume ls
+```
+
+#### 11.1.3 특정 Volume상세조회
+
+```
+docker volume inspect <volume-name>`
+`docker volume inspect db-redis
+```
+
+- `Mountpoint`에 적힌 경로가 현재 volume값이 저장된 경로가 적혀있음
+  ( ubuntu 20.04 에서 실행한 결과 `/var/lib/docker/volumnes/db-redis/_data` )
+
+#### 11.1.4 Volume사용
+
+`docker run`의 다른 옵션 입력하듯이 입력
+
+- `docker run <option> -v <volume-name>:<container-route> <image-name>`
+- `docker run --name my-redis -d -p 8080:8080 -v my-redis:/data redis`
+  위 처럼 사용하면 my-redis이라는 폴더에 존재하는 파일들이 컨테이너의 `/data`에 공유됨
+  컨테이너를 몇개를 사용하든 동일한 파일이 공유되며 하나가 수정되면 전체가 바뀜
+- `-v usr/app/node_modules`처럼 작성시에는 현재 컨테이너환경에서 `node_modules`를 찾으라는 의미
+
+#### 11.1.5 Volume제거
+
+- 특정삭제: `docker volume rm <volume-name>`
+- 전체삭제: `docker volume prune`
+
+### 11.2 bind-mount방식
+
+특정 volume을 생성하지않고 호스트의 특정 경로의 폴더를 공유하는것
+
+#### 11.2.1 사용
+
+- `docker run <option> -v <host-route>:<container-route> <image-name>`
+- `docker run --name my-node -d -p 8080:8080 -v $(pwd):/app/src node:10`
+  \- ubuntu 20.04 terminal 기준 현재경로는 `$(pwd)`
+  \- window 10 cmd 기준 현재경로는 `%cd%`
 
 <br/>
+
+<br/>
+
+
 
 ## 참고자료
 
 [Docker-설치부터 배포까지](https://velog.io/@swhybein/Docker-%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0)
+
+[Docker Volume & Bind-mount](https://velog.io/@1-blue/docker-volume-%EC%82%AC%EC%9A%A9%EB%B2%95)
